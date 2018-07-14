@@ -1,0 +1,56 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.jakewharton.butterknife'
+
+android {
+    def globalConfiguration = rootProject.extensions.getByName("ext")
+
+    compileSdkVersion globalConfiguration.getAt("androidCompileSdkVersion")
+    buildToolsVersion globalConfiguration.getAt("androidBuildToolsVersion")
+
+    defaultConfig {
+        minSdkVersion globalConfiguration.getAt("androidMinSdkVersion")
+        targetSdkVersion globalConfiguration.getAt("androidTargetSdkVersion")
+        versionCode globalConfiguration.getAt("androidVersionCode")
+        versionName globalConfiguration.getAt("androidVersionName")
+        testInstrumentationRunner globalConfiguration.getAt("testInstrumentationRunner")
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    def presentationDependencies = rootProject.ext.presentationDependencies
+    def presentationTestDependencies = rootProject.ext.presentationTestDependencies
+    def developmentDependencies = rootProject.ext.developmentDependencies
+    implementation presentationDependencies.dagger
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    annotationProcessor presentationDependencies.daggerCompiler
+    implementation presentationDependencies.glide
+    implementation presentationDependencies.daggerAndroid
+    implementation presentationDependencies.daggerAndroidSpt
+    annotationProcessor presentationDependencies.daggerProcessor
+    implementation presentationDependencies.rxJava
+    implementation presentationDependencies.rxAndroid
+    implementation presentationDependencies.butterKnife
+    annotationProcessor presentationDependencies.butterKnifeAP
+    implementation presentationDependencies.appcompatV7
+    implementation presentationDependencies.recyclerView
+    implementation presentationDependencies.cardView
+    implementation presentationDependencies.design
+    implementation presentationDependencies.constraintLayout
+    testImplementation presentationTestDependencies.junit
+    implementation developmentDependencies.leakCanary
+    implementation dataDependencies.gson
+    implementation project(':data')
+    implementation project(':domain')
+}

@@ -1,0 +1,56 @@
+apply plugin: 'com.android.library'
+
+android {
+    def globalConfiguration = rootProject.extensions.getByName("ext")
+
+    compileSdkVersion globalConfiguration.getAt("androidCompileSdkVersion")
+    buildToolsVersion globalConfiguration.getAt("androidBuildToolsVersion")
+
+    defaultConfig {
+        minSdkVersion globalConfiguration.getAt("androidMinSdkVersion")
+        targetSdkVersion globalConfiguration.getAt("androidTargetSdkVersion")
+        versionCode globalConfiguration.getAt("androidVersionCode")
+
+        ndk {
+            // Specifies the ABI configurations of your native
+            // libraries Gradle should build and package with your APK.
+            stl = 'gnustl_shared'
+            abiFilters = ['armeabi', 'armeabi-v7a']
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    sourceSets{
+        main{
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+}
+
+dependencies {
+    def dataDependencies = rootProject.ext.dataDependencies
+    def testDependencies = rootProject.ext.dataTestDependencies
+    implementation project(':domain')
+    implementation dataDependencies.joda
+    implementation dataDependencies.apache
+    implementation dataDependencies.codec
+    implementation dataDependencies.androidAnnotations
+    implementation dataDependencies.javaxInject
+    implementation dataDependencies.rxJava
+    implementation dataDependencies.rxAndroid
+    implementation dataDependencies.okHttp
+    implementation dataDependencies.gson
+    implementation dataDependencies.rxRelay
+    implementation dataDependencies.retrofit
+    implementation dataDependencies.retrofitRxJava
+    implementation dataDependencies.retrofitGson
+    implementation dataDependencies.retrofitProtobuf
+    testImplementation testDependencies.junit
+    testImplementation testDependencies.assertj
+    testImplementation testDependencies.mockito
+    testImplementation testDependencies.robolectric
+}
