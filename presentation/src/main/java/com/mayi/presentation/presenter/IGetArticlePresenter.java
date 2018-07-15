@@ -9,4 +9,6 @@ import com.mayi.presentation.view.IArticleView;
 public interface IGetArticlePresenter {
     void setView(IArticleView view);
     void getArticle();
+    void getLastArticle();
+    void getNextArticle();
 }

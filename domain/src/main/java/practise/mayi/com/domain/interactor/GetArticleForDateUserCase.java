@@ -10,18 +10,19 @@ import practise.mayi.com.domain.repository.IGetArticleRepository;
 
 /**
  * @author: liwenfei.
- * data: 2018/7/14 14:07.
+ * data: 2018/7/15 13:15.
  */
-public class GetArticleUserCase extends UserCase<Article,Void> {
+public class GetArticleForDateUserCase extends UserCase<Article,String > {
+
     private IGetArticleRepository getArticleRepository;
 
     @Inject
-    GetArticleUserCase(ThreadExecutor executor, PostExecutionThread postExecutionThread, IGetArticleRepository getArticleRepository){
-        super(executor,postExecutionThread);
+    GetArticleForDateUserCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,IGetArticleRepository getArticleRepository){
+        super(threadExecutor,postExecutionThread);
         this.getArticleRepository = getArticleRepository;
     }
     @Override
-    Observable<Article> buildUseCaseObservable(Void aVoid) {
-        return getArticleRepository.getArticle();
+    Observable<Article> buildUseCaseObservable(String s) {
+        return getArticleRepository.getArticleForDate(s);
     }
 }

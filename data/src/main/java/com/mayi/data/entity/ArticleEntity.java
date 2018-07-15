@@ -44,7 +44,7 @@ public class ArticleEntity {
         }
     }
 
-    private static class Date {
+    public static class Date {
         private String curr;
         private String prev;
         private String next;

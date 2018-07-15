@@ -15,23 +15,23 @@ import practise.mayi.com.domain.executor.ThreadExecutor;
  * This interface represents a execution unit for different use cases (this means any use case
  * in the application should implement this contract).
  *
- * By convention each UseCase implementation will return the result using a {@link DisposableObserver}
+ * By convention each UserCase implementation will return the result using a {@link DisposableObserver}
  * that will execute its job in a background thread and will post the result in the UI thread.
  */
-public abstract class UseCase<T, Params> {
+public abstract class UserCase<T, Params> {
 
     private final ThreadExecutor threadExecutor;
     private final PostExecutionThread postExecutionThread;
     private final CompositeDisposable disposables;
 
-    UseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread) {
+    UserCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread) {
         this.threadExecutor = threadExecutor;
         this.postExecutionThread = postExecutionThread;
         this.disposables = new CompositeDisposable();
     }
 
     /**
-     * Builds an {@link Observable} which will be used when executing the current {@link UseCase}.
+     * Builds an {@link Observable} which will be used when executing the current {@link UserCase}.
      */
     abstract Observable<T> buildUseCaseObservable(Params params);
 

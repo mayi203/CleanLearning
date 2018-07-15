@@ -13,5 +13,8 @@ import retrofit2.http.Query;
 public interface ApiService {
 
     @GET("/article/today")
-    Observable<ArticleEntity> getArticle(@Query("dev") int id);
+    Observable<ArticleEntity> getArticle(@Query("dev") int dev);
+
+    @GET("/article/day")
+    Observable<ArticleEntity> getArticleForDate(@Query("dev") int dev,@Query("date") String date);
 }

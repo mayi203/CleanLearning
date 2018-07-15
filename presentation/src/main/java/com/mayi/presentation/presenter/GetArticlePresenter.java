@@ -1,5 +1,6 @@
 package com.mayi.presentation.presenter;
 
+import android.os.Build;
 import android.text.Html;
 import android.util.Log;
 
@@ -9,6 +10,7 @@ import javax.inject.Inject;
 
 import practise.mayi.com.domain.entity.Article;
 import practise.mayi.com.domain.interactor.DefaultObserver;
+import practise.mayi.com.domain.interactor.GetArticleForDateUserCase;
 import practise.mayi.com.domain.interactor.GetArticleUserCase;
 
 /**
@@ -18,11 +20,14 @@ import practise.mayi.com.domain.interactor.GetArticleUserCase;
 public class GetArticlePresenter implements IGetArticlePresenter {
     private final String TAG = this.getClass().getSimpleName();
     private GetArticleUserCase getArticleUserCase;
+    private GetArticleForDateUserCase getArticleForDateUserCase;
     private IArticleView articleView;
+    private Article curArticle;
 
     @Inject
-    GetArticlePresenter(GetArticleUserCase getArticleUserCase){
+    GetArticlePresenter(GetArticleUserCase getArticleUserCase,GetArticleForDateUserCase getArticleForDateUserCase){
         this.getArticleUserCase = getArticleUserCase;
+        this.getArticleForDateUserCase = getArticleForDateUserCase;
     }
 
     @Override
@@ -35,13 +40,28 @@ public class GetArticlePresenter implements IGetArticlePresenter {
         getArticleUserCase.execute(new GetArticleObserver(),null);
     }
 
+    @Override
+    public void getLastArticle() {
+        getArticleForDateUserCase.execute(new GetArticleObserver(),curArticle.getDate().getPrev());
+    }
+
+    @Override
+    public void getNextArticle() {
+        getArticleForDateUserCase.execute(new GetArticleObserver(),curArticle.getDate().getNext());
+    }
+
     private class GetArticleObserver extends DefaultObserver<Article> {
         @Override
         public void onNext(Article article) {
             super.onNext(article);
-            articleView.setArticleTitle(article.getTitle());
-            articleView.setAuthor(article.getAuthor());
-            articleView.setContent(Html.fromHtml(article.getContent()));
+            curArticle = article;
+            articleView.setArticleTitle(curArticle.getTitle());
+            articleView.setAuthor(curArticle.getAuthor());
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+                articleView.setContent(Html.fromHtml(curArticle.getContent(),Html.FROM_HTML_MODE_COMPACT));
+            }else{
+                articleView.setContent(Html.fromHtml(curArticle.getContent()));
+            }
         }
 
         @Override

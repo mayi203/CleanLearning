@@ -6,7 +6,6 @@ import javax.inject.Singleton;
 
 import dagger.Binds;
 import dagger.Module;
-import practise.mayi.com.domain.repository.GetKeyRepository;
 import practise.mayi.com.domain.repository.IGetArticleRepository;
 
 /**

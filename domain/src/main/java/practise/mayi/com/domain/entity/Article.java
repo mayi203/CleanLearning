@@ -10,44 +10,62 @@ public class Article {
     private String digest;
     private String content;
     private String wc;
+    private Date   date;
+
+    public Article(String author,String title,String digest,String content,String wc,Date date){
+        this.author = author;
+        this.title = title;
+        this.digest = digest;
+        this.content = content;
+        this.wc = wc;
+        this.date = date;
+    }
 
     public String getAuthor() {
         return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getDigest() {
         return digest;
-    }
-
-    public void setDigest(String digest) {
-        this.digest = digest;
     }
 
     public String getContent() {
         return content;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
     public String getWc() {
         return wc;
     }
 
-    public void setWc(String wc) {
-        this.wc = wc;
+    public Date getDate() {
+        return date;
+    }
+
+    public static class Date {
+        private String curr;
+        private String prev;
+        private String next;
+
+        public Date(String curr,String prev,String next){
+            this.curr = curr;
+            this.prev = prev;
+            this.next = next;
+        }
+
+        public String getCurr() {
+            return curr;
+        }
+
+        public String getPrev() {
+            return prev;
+        }
+
+        public String getNext() {
+            return next;
+        }
     }
 }
