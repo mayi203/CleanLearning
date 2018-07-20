@@ -6,6 +6,9 @@ import android.util.Log;
 
 import com.mayi.presentation.view.IArticleView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.inject.Inject;
 
 import practise.mayi.com.domain.entity.Article;
@@ -19,14 +22,12 @@ import practise.mayi.com.domain.interactor.GetArticleUserCase;
  */
 public class GetArticlePresenter implements IGetArticlePresenter {
     private final String TAG = this.getClass().getSimpleName();
-    private GetArticleUserCase getArticleUserCase;
     private GetArticleForDateUserCase getArticleForDateUserCase;
     private IArticleView articleView;
     private Article curArticle;
 
     @Inject
-    GetArticlePresenter(GetArticleUserCase getArticleUserCase,GetArticleForDateUserCase getArticleForDateUserCase){
-        this.getArticleUserCase = getArticleUserCase;
+    GetArticlePresenter(GetArticleForDateUserCase getArticleForDateUserCase){
         this.getArticleForDateUserCase = getArticleForDateUserCase;
     }
 
@@ -37,7 +38,9 @@ public class GetArticlePresenter implements IGetArticlePresenter {
 
     @Override
     public void getArticle() {
-        getArticleUserCase.execute(new GetArticleObserver(),null);
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+        String date = format.format(new Date());
+        getArticleForDateUserCase.execute(new GetArticleObserver(),date);
     }
 
     @Override

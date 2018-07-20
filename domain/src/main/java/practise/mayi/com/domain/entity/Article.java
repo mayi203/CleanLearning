@@ -1,10 +1,12 @@
 package practise.mayi.com.domain.entity;
 
+import java.io.Serializable;
+
 /**
  * @author: liwenfei.
  * data: 2018/7/14 13:58.
  */
-public class Article {
+public class Article implements Serializable{
     private String author;
     private String title;
     private String digest;
@@ -45,7 +47,7 @@ public class Article {
         return date;
     }
 
-    public static class Date {
+    public static class Date implements Serializable{
         private String curr;
         private String prev;
         private String next;
