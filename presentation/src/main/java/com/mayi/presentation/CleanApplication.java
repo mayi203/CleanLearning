@@ -1,6 +1,5 @@
 package com.mayi.presentation;
 
-import com.mayi.data.utils.PathUtil;
 import com.mayi.presentation.internal.di.components.DaggerApplicationComponent;
 
 import dagger.android.AndroidInjector;
@@ -11,7 +10,6 @@ public class CleanApplication extends DaggerApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        PathUtil.getInstance().init(this);
     }
 
     @Override

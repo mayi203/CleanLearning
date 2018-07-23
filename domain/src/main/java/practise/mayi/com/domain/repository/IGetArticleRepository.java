@@ -10,4 +10,5 @@ import practise.mayi.com.domain.entity.Article;
 public interface IGetArticleRepository {
     Observable<Article> getArticle();
     Observable<Article> getArticleForDate(String date);
+    Observable<Object>  collectArticle(Article article);
 }

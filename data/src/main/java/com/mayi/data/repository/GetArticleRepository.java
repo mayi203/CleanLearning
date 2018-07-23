@@ -1,18 +1,17 @@
 package com.mayi.data.repository;
 
+import android.util.Log;
+
 import com.mayi.data.api.ApiClient;
 import com.mayi.data.api.ApiService;
 import com.mayi.data.entity.ArticleEntity;
 import com.mayi.data.utils.FileUtil;
 import com.mayi.data.utils.PathUtil;
-
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import javax.inject.Inject;
-
 import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import practise.mayi.com.domain.entity.Article;
 import practise.mayi.com.domain.repository.IGetArticleRepository;
 
@@ -22,7 +21,11 @@ import practise.mayi.com.domain.repository.IGetArticleRepository;
  */
 public class GetArticleRepository implements IGetArticleRepository {
 
+    private final String TAG = getClass().getSimpleName();
     private ApiService apiService;
+
+    @Inject
+    PathUtil pathUtil;
 
     @Inject
     GetArticleRepository(ApiClient apiClient){
@@ -36,31 +39,47 @@ public class GetArticleRepository implements IGetArticleRepository {
             ArticleEntity.Date date = data.getDate();
 
             Article.Date dateOut = new Article.Date(date.getCurr(),date.getPrev(),date.getNext());
-            Article article = new Article(data.getAuthor(),data.getTitle(),data.getDigest(),data.getContent(),data.getWc(),dateOut);
+            Article article = new Article(data.getAuthor(),data.getTitle(),data.getDigest(),data.getContent().replaceAll("<p>","<p>&nbsp;&nbsp;&nbsp;&nbsp;"),data.getWc(),dateOut);
 
-            FileUtil.writeObjectToFile(article, PathUtil.getInstance().getArticlePath()+ File.separator+article.getDate().getCurr()+".article");
+            FileUtil.writeObjectToFile(article, pathUtil.getCachePath()+article.getDate().getCurr()+".article");
             return article;
         });
     }
 
     @Override
     public Observable<Article> getArticleForDate(String d) {
-        File articleFile = new File(PathUtil.getInstance().getArticlePath()+File.separator+d+".article");
+        File articleFile = new File(pathUtil.getCachePath()+d+".article");
         if(articleFile.exists()){
             return Observable.create(emitter -> {
                 emitter.onNext((Article) FileUtil.readObjectFromFile(articleFile.getPath()));
             });
         }else{
             return apiService.getArticleForDate(1,d).map(articleEntity -> {
+                Log.i(TAG,"current thread: "+ Thread.currentThread().getName());
                 ArticleEntity.Data data = articleEntity.getData();
                 ArticleEntity.Date date = data.getDate();
 
                 Article.Date dateOut = new Article.Date(date.getCurr(),date.getPrev(),date.getNext());
-                Article article = new Article(data.getAuthor(),data.getTitle(),data.getDigest(),data.getContent(),data.getWc(),dateOut);
+                Article article = new Article(data.getAuthor(),data.getTitle(),data.getDigest(),data.getContent().replaceAll("<p>","<p>&nbsp;&nbsp;&nbsp;&nbsp;"),data.getWc(),dateOut);
 
-                FileUtil.writeObjectToFile(article, PathUtil.getInstance().getArticlePath()+File.separator+article.getDate().getCurr()+".article");
                 return article;
+            }).observeOn(Schedulers.io()).doOnNext(article -> {
+                Log.i(TAG,"current thread: "+ Thread.currentThread().getName());
+                FileUtil.writeObjectToFile(article, pathUtil.getCachePath()+article.getDate().getCurr()+".article");
             });
         }
+    }
+
+    @Override
+    public Observable<Object> collectArticle(Article article) {
+        File articleFile = new File(pathUtil.getCollectionPath()+article.getDate().getCurr()+".article");
+        return Observable.create(emitter -> {
+            if(!articleFile.exists()){
+                FileUtil.writeObjectToFile(article,pathUtil.getCollectionPath()+article.getDate().getCurr()+".article");
+                emitter.onComplete();
+            }else {
+                emitter.onComplete();
+            }
+        });
     }
 }

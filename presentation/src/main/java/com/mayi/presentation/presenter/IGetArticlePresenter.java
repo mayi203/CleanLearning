@@ -6,9 +6,10 @@ import com.mayi.presentation.view.IArticleView;
  * @author: liwenfei.
  * data: 2018/7/14 14:22.
  */
-public interface IGetArticlePresenter {
+public interface IGetArticlePresenter extends BasePresenter{
     void setView(IArticleView view);
     void getArticle();
     void getLastArticle();
     void getNextArticle();
+    void collectArticle();
 }

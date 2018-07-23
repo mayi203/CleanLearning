@@ -1,38 +1,44 @@
 package com.mayi.data.utils;
 
 import android.content.Context;
-import android.os.Environment;
 
 import java.io.File;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * @author: liwenfei.
  * data: 2018/7/20 11:16.
  */
+@Singleton
 public class PathUtil {
-    private static PathUtil _instance = new PathUtil();
-
-    public static PathUtil getInstance(){
-        return _instance;
-    }
     private String rootPath;
-//    private String articleKey = "article";
-//    private String articlePath;
-    private PathUtil(){
+    private String cacheKey = "cache";
+    private String cachePath;
+    private String collectionKey = "collection";
+    private String collectionPath;
 
-    }
-
-    public void init(Context context){
+    @Inject
+    PathUtil(Context context){
         rootPath = context.getExternalFilesDir("article").getPath();
-
-//        articlePath = rootPath + File.separator + articleKey;
-//        File dir = new File(articlePath);
-//        if(!dir.exists()){
-//            dir.mkdir();
-//        }
+        cachePath = rootPath + File.separator + cacheKey;
+        File cacheDir = new File(cachePath);
+        if(!cacheDir.exists()){
+            cacheDir.mkdir();
+        }
+        collectionPath = rootPath + File.separator + collectionKey;
+        File collectsDir = new File(collectionPath);
+        if(!collectsDir.exists()){
+            collectsDir.mkdir();
+        }
     }
 
-    public String getArticlePath(){
-        return rootPath;
+    public String getCachePath(){
+        return rootPath + File.separator + cacheKey + File.separator;
+    }
+
+    public String getCollectionPath(){
+        return rootPath + File.separator + collectionKey + File.separator;
     }
 }

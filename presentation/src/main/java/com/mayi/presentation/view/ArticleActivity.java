@@ -1,7 +1,9 @@
 package com.mayi.presentation.view;
 
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.Spanned;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -26,6 +28,8 @@ public class ArticleActivity extends DaggerAppCompatActivity implements IArticle
     TextView tvContent;
     @BindView(R2.id.sv_container)
     ScrollView svContainer;
+    @BindView(R2.id.toolbar)
+    Toolbar toolbar;
 
     @Inject
     GetArticlePresenter getArticlePresenter;
@@ -43,6 +47,15 @@ public class ArticleActivity extends DaggerAppCompatActivity implements IArticle
         getArticlePresenter.setView(this);
         getArticlePresenter.getArticle();
 
+        toolbar.inflateMenu(R.menu.article_menu);
+
+        toolbar.setOnMenuItemClickListener(item -> {
+            if(item.getItemId() == R.id.collect){
+                getArticlePresenter.collectArticle();
+                return true;
+            }
+            return false;
+        });
         switchAnimation = AnimationUtils.loadAnimation(this,R.anim.article_switch);
         svContainer.setOnTouchListener((v, event) -> {
             switch (event.getAction() & MotionEvent.ACTION_MASK){
@@ -69,13 +82,19 @@ public class ArticleActivity extends DaggerAppCompatActivity implements IArticle
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        getArticlePresenter.onDestroy();
+    }
+
+    @Override
     public void setArticleTitle(String title) {
-        setTitle(title);
+        toolbar.setTitle(title);
     }
 
     @Override
     public void setAuthor(String author) {
-        getSupportActionBar().setSubtitle(author);
+        toolbar.setSubtitle(author);
     }
 
     @Override

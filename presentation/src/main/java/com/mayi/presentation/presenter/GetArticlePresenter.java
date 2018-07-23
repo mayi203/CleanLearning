@@ -12,9 +12,9 @@ import java.util.Date;
 import javax.inject.Inject;
 
 import practise.mayi.com.domain.entity.Article;
+import practise.mayi.com.domain.interactor.CollectArticleUserCase;
 import practise.mayi.com.domain.interactor.DefaultObserver;
 import practise.mayi.com.domain.interactor.GetArticleForDateUserCase;
-import practise.mayi.com.domain.interactor.GetArticleUserCase;
 
 /**
  * @author: liwenfei.
@@ -23,12 +23,14 @@ import practise.mayi.com.domain.interactor.GetArticleUserCase;
 public class GetArticlePresenter implements IGetArticlePresenter {
     private final String TAG = this.getClass().getSimpleName();
     private GetArticleForDateUserCase getArticleForDateUserCase;
+    private CollectArticleUserCase collectArticleUserCase;
     private IArticleView articleView;
     private Article curArticle;
 
     @Inject
-    GetArticlePresenter(GetArticleForDateUserCase getArticleForDateUserCase){
+    GetArticlePresenter(GetArticleForDateUserCase getArticleForDateUserCase,CollectArticleUserCase collectArticleUserCase){
         this.getArticleForDateUserCase = getArticleForDateUserCase;
+        this.collectArticleUserCase = collectArticleUserCase;
     }
 
     @Override
@@ -51,6 +53,16 @@ public class GetArticlePresenter implements IGetArticlePresenter {
     @Override
     public void getNextArticle() {
         getArticleForDateUserCase.execute(new GetArticleObserver(),curArticle.getDate().getNext());
+    }
+
+    @Override
+    public void collectArticle() {
+        collectArticleUserCase.execute(new DefaultObserver<>(),curArticle);
+    }
+
+    @Override
+    public void onDestroy() {
+        getArticleForDateUserCase.dispose();
     }
 
     private class GetArticleObserver extends DefaultObserver<Article> {
