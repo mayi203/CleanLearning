@@ -6,6 +6,8 @@ import com.mayi.data.api.ApiService;
 import com.mayi.data.entity.ArticleEntity;
 import com.mayi.data.utils.FileUtil;
 import com.mayi.data.utils.PathUtil;
+import com.mayi.data.utils.RetryWhenProcess;
+
 import java.io.File;
 import javax.inject.Inject;
 import io.reactivex.Observable;
@@ -62,7 +64,7 @@ public class GetArticleRepository implements IGetArticleRepository {
             Article article = new Article(data.getAuthor(),data.getTitle(),data.getDigest(),data.getContent().replaceAll("<p>","<p>&nbsp;&nbsp;&nbsp;&nbsp;"),data.getWc(),dateOut);
 
             return article;
-        }).doOnNext(article -> {
+        }).retryWhen(new RetryWhenProcess()).doOnNext(article -> {
             Log.i(TAG,"current thread: "+ Thread.currentThread().getName());
             FileUtil.writeObjectToFile(article, pathUtil.getCachePath()+article.getDate().getCurr()+".article");
         });
